@@ -10,7 +10,6 @@ import SwiftUI
 
 struct CategoryFilterView: View {
     let categories: [Category]
-    /// `nil` means "All".
     @Binding var selectedCategoryId: Int?
 
     var body: some View {

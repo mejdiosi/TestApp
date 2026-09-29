@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-/// Shared layout for error and empty states.
+/// layout for error and empty states.
 struct StatusMessageView: View {
     let systemImage: String
     let title: String

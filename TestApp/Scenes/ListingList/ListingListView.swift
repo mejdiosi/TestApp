@@ -19,13 +19,13 @@ struct ListingListView: View {
     var body: some View {
         content
             .navigationTitle("Listings")
-            .task { await viewModel.loadIfNeeded() }
+            .task { await viewModel.load() }
     }
 
     @ViewBuilder
     private var content: some View {
         switch viewModel.state {
-        case .idle, .loading:
+        case .loading:
             ProgressView("Loading listings…")
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .failed(let message):
@@ -59,9 +59,13 @@ struct ListingListView: View {
                     : "There are no listings in this category."
             )
         } else {
-            List(viewModel.filteredItems) { item in
-                ListingRowView(item: item)
+          List(viewModel.filteredItems) { item in
+            NavigationLink {
+              ListingDetailView(item: item)
+            } label: {
+              ListingRowView(item: item)
             }
+          }
             .listStyle(.plain)
             .id(viewModel.selectedCategoryId)//reset view
             .refreshable { await viewModel.load() }
