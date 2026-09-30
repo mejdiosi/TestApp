@@ -26,10 +26,9 @@ MVVM, protocol-based services, dependency injection through initializers.
 App/            App entry point, composition root
 Models/         Listing, Category, ListingFeed, ImagesURL (Decodable, Equatable)
 APIService/     APIServiceProtocol, APIService, Endpoint, APIError
-Features/
+Scenes/
 ListingList/    View, ViewModel, Row
 ListingDetail/  View
-Core/           Reusable views (async image with placeholder), formatters
 
 
 Rules:

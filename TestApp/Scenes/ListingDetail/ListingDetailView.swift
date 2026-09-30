@@ -14,7 +14,7 @@ struct ListingDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                RemoteImageView(url: item.imageURL)
+                ListingImageView(url: item.imageURL)
                     .aspectRatio(4 / 3, contentMode: .fit)
                     .accessibilityHidden(true)
 

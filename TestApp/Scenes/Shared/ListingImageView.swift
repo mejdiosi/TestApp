@@ -1,5 +1,5 @@
 //
-//  RemoteImageView.swift
+//  ListingImageView.swift
 //  TestApp
 //
 //  Created by Mejdi Kchouk on 29/9/2026.
@@ -9,7 +9,8 @@
 import SwiftUI
 
 
-struct RemoteImageView: View {
+/// Remote listing image with a consistent loading and fallback presentation.
+struct ListingImageView: View {
   let url: URL?
   
   var body: some View {

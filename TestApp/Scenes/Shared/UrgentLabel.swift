@@ -2,9 +2,6 @@
 //  UrgentLabel.swift
 //  TestApp
 //
-//  Created by Mejdi Kchouk on 29/9/2026.
-//
-
 
 import SwiftUI
 

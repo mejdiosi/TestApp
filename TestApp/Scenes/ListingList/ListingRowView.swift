@@ -15,7 +15,7 @@ struct ListingRowView: View {
   
   var body: some View {
     HStack(alignment: .top, spacing: 12) {
-      RemoteImageView(url: item.thumbnailURL)
+      ListingImageView(url: item.thumbnailURL)
         .frame(width: thumbnailSize, height: thumbnailSize)
       
       VStack(alignment: .leading, spacing: 4) {
