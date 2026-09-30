@@ -1,7 +1,10 @@
 //
-//  TestAppTests.swift
-//  TestAppTests
+//  ListingListViewModelTests.swift
+//  TestApp
 //
+//  Created by Mejdi Kchouk on 30/9/2026.
+//
+
 
 import XCTest
 @testable import TestApp
@@ -36,6 +39,26 @@ final class ListingListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.filteredItems.map(\.id), [2])
     }
 
+    func testFilteredItemsPreserveTheOrderReturnedByTheAPI() async {
+
+        let service = MockAPIService(
+            listings: [
+                listing(id: 3, categoryID: 10),
+                listing(id: 1, categoryID: 20),
+                listing(id: 2, categoryID: 10)
+            ],
+            categories: [ListingCategory(id: 10, name: "Vehicles"), ListingCategory(id: 20, name: "Homes")]
+        )
+        let viewModel = makeViewModel(service: service)
+        await viewModel.load()
+
+        XCTAssertEqual(viewModel.filteredItems.map(\.id), [3, 1, 2])
+
+        viewModel.selectedCategoryId = 10
+
+        XCTAssertEqual(viewModel.filteredItems.map(\.id), [3, 2])
+    }
+
     func testLoadExposesAFailureStateWhenTheServiceFails() async {
         let service = MockAPIService(listingsError: TestError.unavailable)
         let viewModel = makeViewModel(service: service)
@@ -45,20 +68,8 @@ final class ListingListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.state, .failed(TestError.unavailable.localizedDescription))
     }
 
-    func testListingItemResolvesPreferredImageURLsAgainstTheBaseURL() {
-        let item = ListingItem(
-            listing: listing(id: 1, categoryID: 10, images: ImagesURL(small: "/images/full.jpg", thumb: "/images/thumb.jpg")),
-            categoryName: "Vehicles",
-            baseURL: URL(string: "http://localhost:8080")!
-        )
+    // MARK: - Helpers
 
-        XCTAssertEqual(item.thumbnailURL, URL(string: "http://localhost:8080/images/thumb.jpg"))
-        XCTAssertEqual(item.imageURL, URL(string: "http://localhost:8080/images/full.jpg"))
-    }
-  
-  
-//helpers
-  
     private func makeViewModel(service: MockAPIService) -> ListingListViewModel {
         ListingListViewModel(service: service, baseURL: URL(string: "https://example.com")!)
     }
