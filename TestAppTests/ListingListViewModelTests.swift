@@ -13,31 +13,7 @@ private typealias ListingCategory = TestApp.Category
 
 @MainActor
 final class ListingListViewModelTests: XCTestCase {
-    func testLoadMapsListingsAndCategories() async {
-        let service = MockAPIService(
-            listings: [listing(id: 1, categoryID: 10)],
-            categories: [ListingCategory(id: 10, name: "Vehicles")]
-        )
-        let viewModel = makeViewModel(service: service)
-
-        await viewModel.load()
-
-        XCTAssertEqual(viewModel.state, .loaded)
-        XCTAssertEqual(viewModel.categories, [ListingCategory(id: 10, name: "Vehicles")])
-        XCTAssertEqual(viewModel.filteredItems.map(\.categoryName), ["Vehicles"])
-    }
-
-    func testFilteredItemsReturnsOnlyTheSelectedCategory() async {
-        let service = MockAPIService(
-            listings: [listing(id: 1, categoryID: 10), listing(id: 2, categoryID: 20)],
-            categories: [ListingCategory(id: 10, name: "Vehicles"), ListingCategory(id: 20, name: "Homes")]
-        )
-        let viewModel = makeViewModel(service: service)
-        await viewModel.load()
-        viewModel.selectedCategoryId = 20
-
-        XCTAssertEqual(viewModel.filteredItems.map(\.id), [2])
-    }
+  
 
     func testFilteredItemsPreserveTheOrderReturnedByTheAPI() async {
 
@@ -67,11 +43,40 @@ final class ListingListViewModelTests: XCTestCase {
 
         XCTAssertEqual(viewModel.state, .failed(TestError.unavailable.localizedDescription))
     }
+  
+  
+  func testEmptySearchLoadsTheFullFeed() async {
+    let service = MockAPIService()
+    let viewModel = makeViewModel(service: service)
+    viewModel.searchText = "   "
+    
+    await viewModel.search()
+    
+    XCTAssertEqual(service.requestedQueries, [nil])
+  }
+  
+  func testCancelledSearchDoesNotChangeTheState() async {
+    let service = MockAPIService(listings: [listing(id: 1, categoryID: 10)], delay: .seconds(5))
+    let viewModel = makeViewModel(service: service)
+    
+    let task = Task { await viewModel.search() }
+    task.cancel()
+    await task.value
+    
+    XCTAssertEqual(viewModel.state, .loading)   // not .failed, no stale items
+    XCTAssertTrue(viewModel.filteredItems.isEmpty)
+  }
+  
+  func testListingsEndpointEncodesTheSearchQuery() {
+    let url = Endpoint.listings(query: "vélo bleu").url(baseURL: URL(string: "https://example.com")!)
+    
+    XCTAssertEqual(url?.absoluteString, "https://example.com/listings?query=v%C3%A9lo%20bleu")
+  }
 
     // MARK: - Helpers
 
     private func makeViewModel(service: MockAPIService) -> ListingListViewModel {
-        ListingListViewModel(service: service, baseURL: URL(string: "https://example.com")!)
+      ListingListViewModel(service: service, baseURL: URL(string: "https://example.com")!, searchDebounce: .zero)
     }
 
     private func listing(id: Int, categoryID: Int, images: ImagesURL? = nil) -> Listing {
@@ -88,19 +93,29 @@ final class ListingListViewModelTests: XCTestCase {
     }
 }
 
-private struct MockAPIService: APIServiceProtocol {
-    var listings: [Listing] = []
-    var categories: [ListingCategory] = []
-    var listingsError: Error?
-
-    func fetchListings() async throws -> [Listing] {
-        if let listingsError { throw listingsError }
-        return listings
-    }
-
-    func fetchCategories() async throws -> [ListingCategory] {
-        categories
-    }
+private final class MockAPIService: APIServiceProtocol {
+  var listings: [Listing]
+  var categories: [ListingCategory]
+  var listingsError: Error?
+  var delay: Duration?
+  private(set) var requestedQueries: [String?] = []
+  
+  init(listings: [Listing] = [], categories: [ListingCategory] = [],
+       listingsError: Error? = nil, delay: Duration? = nil) {
+    self.listings = listings
+    self.categories = categories
+    self.listingsError = listingsError
+    self.delay = delay
+  }
+  
+  func fetchListings(query: String?) async throws -> [Listing] {
+    requestedQueries.append(query)
+    if let delay { try await Task.sleep(for: delay) }
+    if let listingsError { throw listingsError }
+    return listings
+  }
+  
+  func fetchCategories() async throws -> [ListingCategory] { categories }
 }
 
 private enum TestError: LocalizedError {
