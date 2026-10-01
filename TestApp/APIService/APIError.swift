@@ -19,9 +19,9 @@ enum APIError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .transport:
-            return "Unable to reach the server. Check your connection and try again."
+            return "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez."
         case .invalidURL, .invalidResponse, .badStatus, .decoding:
-            return "Something went wrong. Please try again."
+            return "Une erreur est survenue. Veuillez réessayer."
         }
     }
 }

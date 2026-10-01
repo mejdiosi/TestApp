@@ -33,7 +33,7 @@ struct ListingRowView: View {
         }
       }
     }
-    .padding(.vertical, 4)
+    .padding(.vertical, 8)
     .accessibilityElement(children: .ignore)
     .accessibilityLabel(accessibilityDescription)
   }

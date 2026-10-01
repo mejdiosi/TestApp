@@ -25,7 +25,7 @@ struct ListingItem: Identifiable, Equatable {
     /// Larger image for the detail screen. `nil` when the listing has no image.
   let imageURL: URL?
   
-  static let unknownCategoryName = "Other"
+  static let unknownCategoryName = "Autre"
   
   init(listing: Listing, categoryName: String?, baseURL: URL) {
     id = listing.id
@@ -41,10 +41,9 @@ struct ListingItem: Identifiable, Equatable {
     
     let images = listing.imagesUrl
     thumbnailURL = Self.imageURL(from: images?.thumb ?? images?.small, baseURL: baseURL)
-    imageURL = Self.imageURL(from: images?.small ?? images?.thumb, baseURL: baseURL)
+    imageURL = Self.imageURL(from: images?.thumb ?? images?.small, baseURL: baseURL)
   }
   
-    /// The API returns server-relative paths (e.g. `/images/ad-thumb/x.jpg`).
   private static func imageURL(from path: String?, baseURL: URL) -> URL? {
     guard let path, !path.isEmpty else { return nil }
     return URL(string: path, relativeTo: baseURL)?.absoluteURL

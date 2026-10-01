@@ -18,11 +18,11 @@ struct ListingListView: View {
 
   var body: some View {
     content
-      .navigationTitle("Listings")
+      .navigationTitle("Annonces")
       .searchable(
         text: $viewModel.searchText,
         placement: .navigationBarDrawer(displayMode: .always),
-        prompt: "Search listings"
+        prompt: "Rechercher une annonce"
       )
       .autocorrectionDisabled()
       .task(id: viewModel.searchText) { await viewModel.search() }   
@@ -32,25 +32,27 @@ struct ListingListView: View {
     private var content: some View {
         switch viewModel.state {
         case .loading:
-            ProgressView("Loading listings…")
+            ProgressView("Chargement des annonces…")
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .failed(let message):
             StatusMessageView(
                 systemImage: "wifi.exclamationmark",
-                title: "Couldn't load listings",
+                title: "Impossible de charger les annonces",
                 message: message,
-                actionTitle: "Try again"
+                actionTitle: "Réessayer"
             ) {
                 Task { await viewModel.load() }
             }
-        case .loaded:
+          case .loaded:
             VStack(spacing: 0) {
-                CategoryFilterView(
-                    categories: viewModel.categories,
-                    selectedCategoryId: $viewModel.selectedCategoryId
-                )
-                listings
+              CategoryFilterView(
+                categories: viewModel.categories,
+                selectedCategoryId: $viewModel.selectedCategoryId
+              )
+              listings
             }
+            .frame(maxWidth: 700)
+          .frame(maxWidth: .infinity)
         }
     }
 
@@ -59,7 +61,7 @@ struct ListingListView: View {
         if viewModel.filteredItems.isEmpty {
           StatusMessageView(
             systemImage: "tray",
-            title: "No listings",
+            title: "Aucune annonce",
             message: emptyMessage
           )
          
@@ -72,6 +74,7 @@ struct ListingListView: View {
             }
           }
             .listStyle(.plain)
+            .scrollContentBackground(.hidden)
             .id(viewModel.selectedCategoryId)//reset view
             .refreshable { await viewModel.load() }
         }
@@ -81,12 +84,12 @@ struct ListingListView: View {
     
     if let query = viewModel.activeQuery {
       return isFilteredByCategory
-      ? "No results for “\(query)” in this category."
-      : "No results for “\(query)”."
+      ? "Aucun résultat pour “\(query)” in this category."
+      : "Aucun résultat pour « \(query) » dans cette catégorie."
     }
     return isFilteredByCategory
     ? "There are no listings in this category."
-    : "There are no listings yet."
+    : "Il n'y a pas encore d'annonces."
   }
   
 }

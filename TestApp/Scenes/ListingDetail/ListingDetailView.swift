@@ -12,22 +12,25 @@ struct ListingDetailView: View {
     let item: ListingItem
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                ListingImageView(url: item.imageURL)
-                    .aspectRatio(4 / 3, contentMode: .fit)
-                    .accessibilityHidden(true)
-
-                header
-
-                if !item.description.isEmpty {
-                    Divider()
-                    description
-                }
-            }
-            .padding()
+      ScrollView {
+        VStack(alignment: .leading, spacing: 16) {
+          ListingImageView(url: item.imageURL)
+            .aspectRatio(4 / 3, contentMode: .fit)
+            .frame(maxWidth: 700)
+            .accessibilityHidden(true)
+          
+          header
+          
+          if !item.description.isEmpty {
+            Divider()
+            description
+          }
         }
-        .navigationTitle("Details")
+        .frame(maxWidth: 700)
+        .frame(maxWidth: .infinity)
+        .padding()
+      }
+      .navigationTitle("Détail")
         .navigationBarTitleDisplayMode(.inline)
     }
 
@@ -46,7 +49,7 @@ struct ListingDetailView: View {
             Text(item.categoryName)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
-            Text("Posted on \(item.formattedDate)")
+            Text("Publiée le \(item.formattedDate)")
                 .font(.footnote)
                 .foregroundColor(.secondary)
         }

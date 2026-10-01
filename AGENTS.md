@@ -21,7 +21,7 @@ Guidance for AI coding agents working in this repository.
 ## Architecture
 
 MVVM, protocol-based services, dependency injection through initializers.
-
+Any other feature should follow the MVVM architecture
 ```
 App/            App entry point, composition root
 Models/         Listing, Category, ListingFeed, ImagesURL (Decodable, Equatable)
@@ -44,26 +44,8 @@ Rules:
 
 - Prefer the simplest solution that works. No speculative abstractions, no unused code.
 - `final` by default, `private` by default, value types for models.
-                                                              - Small files, one main type per file, clear names. No force unwraps (`!`) and no `try!` in app code.
-                                                              - Comments explain *why*, not *what*. Code should read on its own.
-                                                              - Use `Locale`-aware formatting for prices and dates.
+- Small files, one main type per file, clear names. No force unwraps (`!`) and no `try!` in app code.
+- Comments explain *why*, not *what*. Code should read on its own.
+
                                                               
                             
-
-
-Keep `REFLECTION.md` at the repository root and update it as work progresses. It must cover:
-
-1. Tools used and for what.
-                        2. At least one concrete AI suggestion that was **rejected, corrected or rewritten**, and why.
-                        3. Architectural decisions owned by the developer.
-                        4. Ambiguities found in the prompt or API and how they were handled (assumptions).
-                        5. Trade-offs, and what would be done with more time.
-                        
-                        **Agents:** when you propose something the developer changes or rejects, or when you notice an ambiguity, say so clearly in your reply so it can be recorded.
-                        
-                        ## Working agreement for agents
-                        
-                        - Make small, focused changes. Explain the reasoning briefly.
-                        - Do not add features, dependencies, or files beyond the request.
-                        - Before finishing a task: it builds, tests pass, no warnings introduced.
-                        - Ask when a requirement is ambiguous instead of guessing silently.

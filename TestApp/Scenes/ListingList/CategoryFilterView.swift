@@ -15,7 +15,7 @@ struct CategoryFilterView: View {
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                chip("All", isSelected: selectedCategoryId == nil) {
+                chip("Toutes", isSelected: selectedCategoryId == nil) {
                     selectedCategoryId = nil
                 }
                 ForEach(categories) { category in
