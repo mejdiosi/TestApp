@@ -40,7 +40,10 @@ struct ListingImageView: View {
   }
   
   private var placeholder: some View {
-    Image(systemName: "photo")
-      .foregroundColor(.secondary)
+    StatusMessageView(
+      systemImage: "rectangle.and.text.magnifyingglass",
+      title: "Sélectionnez une annonce",
+      message: "Choisissez une annonce pour voir ses détails."
+    )
   }
 }
