@@ -9,7 +9,7 @@
 import Foundation
 
 protocol APIServiceProtocol {
-    func fetchListings() async throws -> [Listing]
+    func fetchListings(query: String?) async throws -> [Listing]
     func fetchCategories() async throws -> [Category]
 }
 
@@ -22,9 +22,9 @@ struct APIService: APIServiceProtocol {
         self.session = session
     }
 
-    func fetchListings() async throws -> [Listing] {
-        try await fetch(.listings, as: ListingFeed.self).items
-    }
+  func fetchListings(query: String?) async throws -> [Listing] {
+    try await fetch(.listings(query: query), as: ListingFeed.self).items
+  }
 
     func fetchCategories() async throws -> [Category] {
         try await fetch(.categories, as: [Category].self)

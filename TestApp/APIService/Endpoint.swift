@@ -23,6 +23,11 @@ struct Endpoint {
 }
 
 extension Endpoint {
-    static let listings = Endpoint(path: "listings")
-    static let categories = Endpoint(path: "categories")
+  static func listings(query: String? = nil) -> Endpoint {
+    Endpoint(
+      path: "listings",
+      queryItems: query.map { [URLQueryItem(name: "query", value: $0)] } ?? []
+    )
+  }
+  static let categories = Endpoint(path: "categories")
 }

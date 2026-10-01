@@ -16,7 +16,8 @@ final class ListingListViewModel: ObservableObject {
     case loaded
     case failed(String)
   }
-  
+  @Published var searchText = ""
+
   @Published private(set) var state: State = .loading
   @Published private(set) var categories: [Category] = []
   @Published var selectedCategoryId: Int? //all
@@ -24,10 +25,27 @@ final class ListingListViewModel: ObservableObject {
   
   private let service: APIServiceProtocol
   private let baseURL: URL
+  private let searchDebounce: Duration
+
   
-  init(service: APIServiceProtocol, baseURL: URL) {
+  init(service: APIServiceProtocol, baseURL: URL, searchDebounce: Duration = .milliseconds(300)) {
     self.service = service
     self.baseURL = baseURL
+    self.searchDebounce = searchDebounce
+  }
+
+  
+  var activeQuery: String? {
+    let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+    return query.isEmpty ? nil : query
+  }
+
+  func search() async {
+    if activeQuery != nil {
+      try? await Task.sleep(for: searchDebounce)
+      guard !Task.isCancelled else { return }
+    }
+    await load()
   }
   
     /// Items for the selected category. The API order is preserved.
@@ -41,7 +59,7 @@ final class ListingListViewModel: ObservableObject {
     if state != .loaded { state = .loading }
     
     do {
-      async let listingsRequest = service.fetchListings()
+      async let listingsRequest = service.fetchListings(query: activeQuery)
       async let categoriesRequest = service.fetchCategories()
       let (loadedListings, loadedCategories) = try await (listingsRequest, categoriesRequest)
       

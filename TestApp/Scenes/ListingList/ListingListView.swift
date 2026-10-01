@@ -16,11 +16,17 @@ struct ListingListView: View {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
-    var body: some View {
-        content
-            .navigationTitle("Listings")
-            .task { await viewModel.load() }
-    }
+  var body: some View {
+    content
+      .navigationTitle("Listings")
+      .searchable(
+        text: $viewModel.searchText,
+        placement: .navigationBarDrawer(displayMode: .always),
+        prompt: "Search listings"
+      )
+      .autocorrectionDisabled()
+      .task(id: viewModel.searchText) { await viewModel.search() }   
+  }
 
     @ViewBuilder
     private var content: some View {
@@ -51,13 +57,12 @@ struct ListingListView: View {
     @ViewBuilder
     private var listings: some View {
         if viewModel.filteredItems.isEmpty {
-            StatusMessageView(
-                systemImage: "tray",
-                title: "No listings",
-                message: viewModel.selectedCategoryId == nil
-                    ? "There are no listings yet."
-                    : "There are no listings in this category."
-            )
+          StatusMessageView(
+            systemImage: "tray",
+            title: "No listings",
+            message: emptyMessage
+          )
+         
         } else {
           List(viewModel.filteredItems) { item in
             NavigationLink {
@@ -71,4 +76,17 @@ struct ListingListView: View {
             .refreshable { await viewModel.load() }
         }
     }
+  private var emptyMessage: String {
+    let isFilteredByCategory = viewModel.selectedCategoryId != nil
+    
+    if let query = viewModel.activeQuery {
+      return isFilteredByCategory
+      ? "No results for “\(query)” in this category."
+      : "No results for “\(query)”."
+    }
+    return isFilteredByCategory
+    ? "There are no listings in this category."
+    : "There are no listings yet."
+  }
+  
 }
