@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A10DD337306B0FFE0083AC25 /* AGENTS.md in Sources */ = {isa = PBXBuildFile; fileRef = A10DD336306B0FF50083AC25 /* AGENTS.md */; };
+		A1053EA0307075F80009AD87 /* REFLECTION.md in Resources */ = {isa = PBXBuildFile; fileRef = A1053E9F307075F80009AD87 /* REFLECTION.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,7 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A10DD336306B0FF50083AC25 /* AGENTS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = AGENTS.md; sourceTree = "<group>"; };
+		A1053E9F307075F80009AD87 /* REFLECTION.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = REFLECTION.md; sourceTree = "<group>"; };
 		A1A05E0D306A8E7C00C3C37C /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1A05E1A306A8E7E00C3C37C /* TestAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1A05E24306A8E7E00C3C37C /* TestAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -84,7 +84,7 @@
 				A1A05E1D306A8E7E00C3C37C /* TestAppTests */,
 				A1A05E27306A8E7E00C3C37C /* TestAppUITests */,
 				A1A05E0E306A8E7C00C3C37C /* Products */,
-				A10DD336306B0FF50083AC25 /* AGENTS.md */,
+				A1053E9F307075F80009AD87 /* REFLECTION.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -218,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1053EA0307075F80009AD87 /* REFLECTION.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -242,7 +243,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10DD337306B0FFE0083AC25 /* AGENTS.md in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

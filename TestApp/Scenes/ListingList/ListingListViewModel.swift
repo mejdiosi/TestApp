@@ -5,7 +5,6 @@
 //  Created by Mejdi Kchouk on 28/9/2026.
 //
 
-
 import Combine
 import Foundation
 
@@ -17,7 +16,7 @@ final class ListingListViewModel: ObservableObject {
     case failed(String)
   }
   @Published var searchText = ""
-
+  
   @Published private(set) var state: State = .loading
   @Published private(set) var categories: [Category] = []
   @Published var selectedCategoryId: Int? //all
@@ -26,20 +25,20 @@ final class ListingListViewModel: ObservableObject {
   private let service: APIServiceProtocol
   private let baseURL: URL
   private let searchDebounce: Duration
-
+  
   
   init(service: APIServiceProtocol, baseURL: URL, searchDebounce: Duration = .milliseconds(300)) {
     self.service = service
     self.baseURL = baseURL
     self.searchDebounce = searchDebounce
   }
-
+  
   
   var activeQuery: String? {
     let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
     return query.isEmpty ? nil : query
   }
-
+  
   func search() async {
     if activeQuery != nil {
       try? await Task.sleep(for: searchDebounce)
@@ -60,7 +59,7 @@ final class ListingListViewModel: ObservableObject {
     
     do {
       async let listingsRequest = service.fetchListings(query: activeQuery)
-      async let categoriesRequest = service.fetchCategories()
+      async let categoriesRequest = categoriesForLoad()
       let (loadedListings, loadedCategories) = try await (listingsRequest, categoriesRequest)
       
       categories = loadedCategories
@@ -74,5 +73,11 @@ final class ListingListViewModel: ObservableObject {
       guard !Task.isCancelled else { return }
       state = .failed(error.localizedDescription)
     }
+  }
+  
+    /// Categories rarely change: fetch them once, then reuse them (e.g. on every search).
+  private func categoriesForLoad() async throws -> [Category] {
+    if !categories.isEmpty { return categories }
+    return try await service.fetchCategories()
   }
 }

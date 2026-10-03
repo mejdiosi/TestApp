@@ -72,6 +72,18 @@ final class ListingListViewModelTests: XCTestCase {
     
     XCTAssertEqual(url?.absoluteString, "https://example.com/listings?query=v%C3%A9lo%20bleu")
   }
+  
+  func testCategoriesAreFetchedOnlyOnce() async {
+    let service = MockAPIService(categories: [ListingCategory(id: 10, name: "Vehicles")])
+    let viewModel = makeViewModel(service: service)
+    
+    await viewModel.load()
+    viewModel.searchText = "vélo"
+    await viewModel.search()
+    
+    XCTAssertEqual(service.categoryRequestCount, 1)
+    XCTAssertEqual(service.requestedQueries, [nil, "vélo"])
+  }
 
     // MARK: - Helpers
 
@@ -115,7 +127,12 @@ private final class MockAPIService: APIServiceProtocol {
     return listings
   }
   
-  func fetchCategories() async throws -> [ListingCategory] { categories }
+  private(set) var categoryRequestCount = 0
+  
+  func fetchCategories() async throws -> [ListingCategory] {
+    categoryRequestCount += 1
+    return categories
+  }
 }
 
 private enum TestError: LocalizedError {
