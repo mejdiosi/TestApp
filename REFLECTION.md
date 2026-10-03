@@ -23,13 +23,10 @@ A SwiftUI app (iOS 16+, MVVM, no external libraries) that shows the listings fro
 
 ## What I changed or rejected
 
-
 - ** Unnecessary API call. **The categories are fetched again on every search. 
 - **Search as the bonus,** and **French** as the app language.
 - **One shared image view:** it handles loading, the placeholder and clipping in one place.
 - **Choosing the bonus.** I compared Search and Pagination and chose Search, because the API has no category parameter. The category filter runs on the device, and it would only see the pages already loaded.
-
-
 
 
 ## Decisions I made myself
